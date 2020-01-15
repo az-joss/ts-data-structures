@@ -1,0 +1,36 @@
+{
+    "name": "algos-ds",
+    "version": "1.0.0",
+    "description": "Algorithms and data structures",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "chalk": "^3.0.0",
+        "clear": "^0.1.0",
+        "inquirer": "^7.0.0",
+        "minimist": "^1.2.0",
+        "typescript": "^3.7.4"
+    },
+    "devDependencies": {
+        "@types/jest": "^24.0.24",
+        "jest": "^24.9.0",
+        "ts-jest": "^24.2.0"
+    },
+    "jest": {
+        "roots": [
+            "<rootDir>/__tests__"
+        ],
+        "testMatch": [
+            "**/*\\.(spec|test)\\.(ts|tsx|js)"
+        ],
+        "transform": {
+            "^.+\\.(ts|tsx)$": "ts-jest"
+        },
+        "moduleFileExtensions": ["ts", "tsx", "js"],
+        "coverageDirectory": "<rootDir>/__coverage__"
+    }
+}
