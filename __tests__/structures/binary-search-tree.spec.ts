@@ -16,19 +16,19 @@ describe('Binary search tree', () => {
 
         test('throws error if value exist in tree', () => {
             let input = [13, 9, 7];
-            instance.insert(input[0]);
-            instance.insert(input[1]);
-            instance.insert(input[2]);
+            input.forEach(el => {
+                instance.insert(el);
+            });
 
-            expect(() => { instance.insert(input[2]); }).toThrowError(`Value ${input[2]} is already exists in the tree`);
+            expect(() => { instance.insert(input[2]); })
+                .toThrowError(`Value ${input[2]} is already exists in the tree`);
         });
 
         test('adds new node to the left branch if value less than root value', () => {
             let input = [13, 9, 7];
-            instance.insert(input[0]);
-            instance.insert(input[1]);
-            instance.insert(15);
-            instance.insert(input[2]);
+            [...input, 15].forEach(el => {
+                instance.insert(el);
+            });
 
             // expect next tree
             //        13
@@ -47,10 +47,9 @@ describe('Binary search tree', () => {
 
         test('adds new node to the right branch if value more than root value', () => {
             let input = [11, 13, 17];
-            instance.insert(input[0]);
-            instance.insert(input[1]);
-            instance.insert(7);
-            instance.insert(input[2]);
+            [...input, 7].forEach(el => {
+                instance.insert(el);
+            });
 
             // expect next tree
             //        11
@@ -68,7 +67,6 @@ describe('Binary search tree', () => {
         });
     });
 
-
     describe('find', () => {
         test('returns undefined if tree is empty', () => {
             let result = instance.find(12);
@@ -77,10 +75,9 @@ describe('Binary search tree', () => {
         });
 
         test('returns undefined if node is not found', () => {
-            instance.insert(5);
-            instance.insert(8);
-            instance.insert(3);
-            instance.insert(7);
+            [5, 8, 3, 7].forEach(el => {
+                instance.insert(el);
+            });
 
             let result = instance.find(12);
 
@@ -88,17 +85,121 @@ describe('Binary search tree', () => {
         });
 
         test('returns node with searching value', () => {
-            instance.insert(5);
-            instance.insert(8);
-            instance.insert(3);
-            instance.insert(11);
-            instance.insert(9);
-            instance.insert(13);
+            [5, 8, 3, 11, 9, 13].forEach(el => {
+                instance.insert(el);
+            });
 
             let result = instance.find(9);
 
             expect(result).toBeInstanceOf(BinarySearchTreeNode);
             expect(result?.getValue()).toEqual(9);
+        });
+    });
+
+    describe('remove', () => {
+        test('returns undefined if tree is empty', () => {
+            let result = instance.remove(12);
+
+            expect(result).toBeUndefined();
+        });
+
+        test('returns undefined if node is not found', () => {
+            let input = [5, 7, 2, 3, 1, 6, 9];
+            input.forEach(el => {
+                instance.insert(el);
+            });
+
+            let result = instance.remove(12);
+
+            expect(result).toBeUndefined();
+            input.forEach(el => {
+                expect(instance.find(el)?.getValue()).toEqual(el);
+            });
+        });
+
+        test('removes and returns node if found node does not have children', () => {
+            let input = [5, 7, 2, 3, 1, 6, 9];
+            input.forEach(el => {
+                instance.insert(el);
+            });
+
+            let deletedNode = instance.remove(6);
+
+            expect(deletedNode?.getValue()).toEqual(6);
+            expect(instance.find(6)).toBeUndefined();
+        });
+
+        test('removes and returns node if found node has 1 right child (right branch)', () => {
+            let input = [5, 7, 2, 3, 1, 6, 9, 11];
+            input.forEach(el => {
+                instance.insert(el);
+            });
+
+            let deletedNode = instance.remove(9);
+
+            expect(deletedNode?.getValue()).toEqual(9);
+            expect(instance.find(9)).toBeUndefined();
+            expect(instance.find(7)?.getLeft()?.getValue()).toEqual(6);
+            expect(instance.find(7)?.getRight()?.getValue()).toEqual(11);
+        });
+
+        test('removes and returns node if found node has 1 left child (right branch)', () => {
+            let input = [5, 7, 2, 3, 1, 6, 9, 8];
+            input.forEach(el => {
+                instance.insert(el);
+            });
+
+            let deletedNode = instance.remove(9);
+
+            expect(deletedNode?.getValue()).toEqual(9);
+            expect(instance.find(9)).toBeUndefined();
+            expect(instance.find(7)?.getLeft()?.getValue()).toEqual(6);
+            expect(instance.find(7)?.getRight()?.getValue()).toEqual(8);
+        });
+
+        test('removes and returns node if found node has 1 right child (left branch)', () => {
+            let input = [5, 9, 2, 3, 1, 11, 6, 8];
+            input.forEach(el => {
+                instance.insert(el);
+            });
+
+            let deletedNode = instance.remove(6);
+
+            expect(deletedNode?.getValue()).toEqual(6);
+            expect(instance.find(6)).toBeUndefined();
+            expect(instance.find(9)?.getLeft()?.getValue()).toEqual(8);
+            expect(instance.find(9)?.getRight()?.getValue()).toEqual(11);
+        });
+
+        test('removes and returns node if found node has 1 left child (left branch)', () => {
+            let input = [5, 7, 2, 3, 1, 8, 9, 6];
+            input.forEach(el => {
+                instance.insert(el);
+            });
+
+            let deletedNode = instance.remove(8);
+
+            expect(deletedNode?.getValue()).toEqual(8);
+            expect(instance.find(8)).toBeUndefined();
+            expect(instance.find(7)?.getLeft()?.getValue()).toEqual(6);
+            expect(instance.find(7)?.getRight()?.getValue()).toEqual(9);
+        });
+
+        test('removes node with 2 children', () => {
+            [20, 10, 7, 30, 25, 29, 24, 27, 9].forEach(el => {
+                instance.insert(el);
+            });
+
+            let deletedNode = instance.remove(25);
+
+            expect(deletedNode?.getValue()).toEqual(25);
+            expect(instance.find(25)).toBeUndefined();
+            expect(instance.find(30)?.getLeft()?.getValue()).toEqual(27);
+            expect(instance.find(27)?.getLeft()?.getValue()).toEqual(24);
+            expect(instance.find(27)?.getRight()?.getValue()).toEqual(29);
+            expect(instance.find(29)?.getLeft()).toBeNull();
+            expect(instance.find(29)?.getRight()).toBeNull();
+
         });
     });
 });

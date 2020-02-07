@@ -109,19 +109,27 @@ export class BinarySearchTree implements IStructure {
             let currentValue = currentNode.getValue();
             let parentValue = parentNode?.getValue();
 
+            // found the node for deletetion
             if (value === currentValue) {
+                let isLeft = value < parentValue;
+
+                // case when both children are present
                 if (currentNode.getLeft() && currentNode.getRight()) {
-                    let _node = currentNode;
                     // @ts-ignore
-                    let leftMinNode = this.findMinInRightBranch(_node);
-                    _node.setValue(leftMinNode.getValue());
-                    this.removeInternal(leftMinNode, leftMinNode.getValue());
-                } else if (currentNode.getLeft()) {
-                    this.setParentChild(parentNode, currentNode.getLeft(), true);
-                } else if (currentNode.getRight()) {
-                    this.setParentChild(parentNode, currentNode.getRight());
-                } else {
-                    this.setParentChild(parentNode, null, value < parentValue);
+                    let {minNode, minParentNode} = this.findMinInRightBranch(currentNode);
+
+                    this.removeInternal(minParentNode, minNode.getValue());
+                    currentNode.setValue(minNode.getValue());
+                    currentNode = new BinarySearchTreeNode(value);
+                } // case 1 child presents from the left
+                else if (currentNode.getLeft()) {
+                    this.setParentChild(parentNode, currentNode.getLeft(), isLeft);
+                } // case 1 child presents from the right
+                else if (currentNode.getRight()) {
+                    this.setParentChild(parentNode, currentNode.getRight(), isLeft);
+                } // case no children
+                else {
+                    this.setParentChild(parentNode, null, isLeft);
                 }
 
                 return currentNode;
@@ -150,21 +158,28 @@ export class BinarySearchTree implements IStructure {
     }
 
     /**
-     * Find lefest node (with minimal value) in subtree
+     * Find node with minimal value in right subtree
      *
-     * @param IBTreeNode node
+     * @param {IBTreeNode} node
      *
-     * @return IBTreeNode
+     * @return {Object} nodeSet
+     *         {IBTreeNode} nodeSet.minNode
+     *         {IBTreeNode} nodeSet.minParentNode
      */
-    private findMinInRightBranch(node: IBTreeNode): IBTreeNode {
-        let branchNode = node.getRight();
+    private findMinInRightBranch(node: IBTreeNode): {minNode: IBTreeNode, minParentNode: IBTreeNode} {
+        let minParentNode = node;
+        let minNode = node.getRight();
+
         // @ts-ignore
-        while (branchNode.getLeft()) {
+        while (minNode.getLeft()) {
             // @ts-ignore
-            branchNode = branchNode.getLeft();
+            minParentNode = minNode;
+            // @ts-ignore
+            minNode = minNode.getLeft();
         }
+
         // @ts-ignore
-        return branchNode;
+        return {minNode, minParentNode};
     }
 
     // @todo traverse() method
