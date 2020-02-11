@@ -1,4 +1,9 @@
-import {BinarySearchTree, BinarySearchTreeNode} from "../../src/structures/binary-search-tree";
+import {
+    BinarySearchTree,
+    BinarySearchTreeNode,
+    TraversOrder,
+    TraversStrategy
+} from "../../src/structures/binary-search-tree";
 
 describe('Binary search tree', () => {
     let instance: BinarySearchTree;
@@ -200,6 +205,94 @@ describe('Binary search tree', () => {
             expect(instance.find(29)?.getLeft()).toBeNull();
             expect(instance.find(29)?.getRight()).toBeNull();
 
+        });
+    });
+
+    describe('travers', () => {
+        test('breadth first', () => {
+            [50, 39, 87, 45, 25, 61, 33, 41, 113, 75]
+                .forEach((val) => {
+                    // @ts-ignore
+                    instance.insert(val);
+                });
+
+            let result: number[] = [];
+
+            // @ts-ignore
+            instance.travers((val) => {
+                result.push(val);
+            });
+
+            expect(result).toEqual([50, 39, 87, 25, 45, 61, 113, 33, 41, 75]);
+        });
+
+        test('depth first: pre-order', () => {
+            [50, 39, 87, 45, 25, 61, 33, 41, 113, 75]
+                .forEach((val) => {
+                    // @ts-ignore
+                    instance.insert(val);
+                });
+
+            let result: number[] = [];
+
+            instance.travers(
+                // @ts-ignore
+                (val) => {
+                    result.push(val);
+                },
+                {
+                    strategy: TraversStrategy.DSF
+                }
+            );
+
+            expect(result).toEqual([50, 39, 25, 33, 45, 41, 87, 61, 75, 113]);
+        });
+
+        test('depth first: post-order', () => {
+            [50, 39, 87, 45, 25, 61, 33, 41, 113, 75]
+                .forEach((val) => {
+                    // @ts-ignore
+                    instance.insert(val);
+                });
+
+            let result: number[] = [];
+
+            instance.travers(
+                // @ts-ignore
+                (val) => {
+                    result.push(val);
+                },
+                {
+                    strategy: TraversStrategy.DSF,
+                    order: TraversOrder.PostOrder
+                }
+            );
+
+            expect(result).toEqual([33, 25, 41, 45, 39, 75, 61, 113, 87, 50]);
+        });
+
+        test('depth first: in-order', () => {
+            let input: number[] = [50, 39, 87, 45, 125, 61, 33, 41, 113, 75];
+
+            input.forEach((val) => {
+                    // @ts-ignore
+                    instance.insert(val);
+                });
+
+            let result: number[] = [];
+
+            instance.travers(
+                // @ts-ignore
+                (val) => {
+                    result.push(val);
+                },
+                {
+                    strategy: TraversStrategy.DSF,
+                    order: TraversOrder.InOrder
+                }
+            );
+
+            expect(result).toEqual(input.sort((a, b) => a < b ? -1 : 1));
         });
     });
 });

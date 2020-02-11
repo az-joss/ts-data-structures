@@ -1,5 +1,24 @@
 import {IBTreeNode, IStructure} from "./data-structure";
 
+//type TraversStrategy = 'bsf' | 'dsf';
+
+export enum TraversStrategy {
+    BSF,
+    DSF
+};
+
+export enum TraversOrder {
+    PreOrder,
+    PostOrder,
+    InOrder
+};
+
+type TraversOptions = {
+    strategy?: TraversStrategy,
+    order?: TraversOrder
+};
+
+
 export class BinarySearchTreeNode implements IBTreeNode {
     constructor(
         private value: number,
@@ -182,5 +201,83 @@ export class BinarySearchTree implements IStructure {
         return {minNode, minParentNode};
     }
 
-    // @todo traverse() method
+    travers(
+        cbl: ((value: number) => void) | null = null,
+        options: TraversOptions = {}
+    ) {
+        if (!this.root) {
+            return;
+        }
+
+        let defaultOptions = {
+            strategy: TraversStrategy.BSF,
+            order: TraversOrder.PreOrder
+        };
+
+        options = {...defaultOptions, ...options}
+
+        switch (options.strategy) {
+            case TraversStrategy.BSF:
+                this.breadthFirstSearch(cbl);
+                break;
+            case TraversStrategy.DSF:
+                this.depthFirstSearch(cbl, options.order);
+                break;
+        }
+    }
+
+    private breadthFirstSearch(
+        cbl: ((value: number) => void) | null = null
+    ) {
+        let queue: IBTreeNode[] = [];
+        // @ts-ignore
+        queue.push(this.root);
+
+        while (queue.length > 0) {
+            // @ts-ignore
+            let currentNode: IBTreeNode = queue.shift();
+
+            if (cbl) {
+                cbl(currentNode.getValue());
+            }
+            let child: IBTreeNode | null;
+            if (child = currentNode.getLeft()) {
+                queue.push(child);
+            }
+            if (child = currentNode.getRight()) {
+                queue.push(child);
+            }
+        }
+    }
+
+    private depthFirstSearch(
+        cbl: ((value: number) => void) | null = null,
+        order: TraversOrder = TraversOrder.PreOrder
+    ): void {
+        let recursion = (node: IBTreeNode) => {
+            if (cbl && order === TraversOrder.PreOrder) {
+                cbl(node.getValue());
+            }
+
+            let child: IBTreeNode | null;
+            if (child = node.getLeft()) {
+                recursion(child);
+            }
+
+            if (cbl && order === TraversOrder.InOrder) {
+                cbl(node.getValue());
+            }
+
+            if (child = node.getRight()) {
+                recursion(child);
+            }
+
+            if (cbl && order === TraversOrder.PostOrder) {
+                cbl(node.getValue());
+            }
+        };
+
+        // @ts-ignore
+        recursion(this.root);
+    }
 }
