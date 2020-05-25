@@ -41,3 +41,10 @@ export interface IBTreeNode extends INode {
     getRight(): IBTreeNode | null,
     setRight(node:IBTreeNode | null): void
 }
+
+export enum TreeTraversStrategy {
+    BFS,
+    DFS_PRE_ORDER,
+    DFS_IN_ORDER,
+    DFS_POST_ORDER,
+}

@@ -1,4 +1,5 @@
 import {BinarySearchTree, BinarySearchTreeNode} from "../../src/structures/binary-search-tree";
+import {TreeTraversStrategy} from "../../src/structures/data-structure";
 
 describe('Binary search tree', () => {
     let instance: BinarySearchTree;
@@ -202,4 +203,60 @@ describe('Binary search tree', () => {
 
         });
     });
+
+    describe('travers', () => {
+        test('return empty array if tree is empty', () => {
+            expect(instance.travers()).toEqual([]);
+        });
+
+        test('return array with values by BFS strategy by default', () => {
+            [20, 10, 7, 30, 25, 29, 24, 27, 9].forEach(el => {
+                instance.insert(el);
+            });
+
+            let result = instance.travers();
+
+            expect(result).toEqual([20, 10, 30, 7, 25, 9, 24, 29, 27]);
+        });
+
+        test('return array with values by DFS pre order strategy', () => {
+            [20, 10, 7, 30, 25, 29, 24, 27, 9].forEach(el => {
+                instance.insert(el);
+            });
+
+            let result = instance.travers(TreeTraversStrategy.DFS_PRE_ORDER);
+
+            expect(result).toEqual([20, 10, 7, 9, 30, 25, 24, 29, 27]);
+        });
+
+        test('return array with values by DFS in order strategy', () => {
+            [20, 10, 7, 30, 25, 29, 24, 27, 9].forEach(el => {
+                instance.insert(el);
+            });
+
+            let result = instance.travers(TreeTraversStrategy.DFS_IN_ORDER);
+
+            expect(result).toEqual([7, 9, 10, 20, 24, 25, 27, 29, 30]);
+        });
+
+        test('return array with values by DFS post order strategy', () => {
+            [20, 10, 7, 30, 25, 29, 24, 27, 9].forEach(el => {
+                instance.insert(el);
+            });
+
+            let result = instance.travers(TreeTraversStrategy.DFS_POST_ORDER);
+
+            expect(result).toEqual([9, 7, 10, 24, 27, 29, 25, 30, 20]);
+        });
+
+        test('throws exception if strategy is unknown', () => {
+            [20, 10, 7, 30, 25, 29, 24, 27, 9].forEach(el => {
+                instance.insert(el);
+            });
+
+            expect(() => { instance.travers(10); })
+                .toThrowError('Unknown travers strategy');
+        });
+    });
+
 });
