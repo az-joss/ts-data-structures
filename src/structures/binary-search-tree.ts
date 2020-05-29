@@ -33,6 +33,15 @@ export class BinarySearchTreeNode implements IBTreeNode {
     }
 }
 
+/**
+ * Complexity (O)
+ * | operation | time   | space |
+ * --------------------------------
+ * | insert    | log N  | 1     |
+ * | find      | log N  | 1     |
+ * | remove    | log N  | log N |
+ * | travers   | log N  | 1     |
+ */
 export class BinarySearchTree implements IStructure {
     constructor(
         private root: IBTreeNode | null = null
@@ -56,7 +65,7 @@ export class BinarySearchTree implements IStructure {
 
         while (currentNode) {
             if (value === currentNode.getValue()) {
-                throw `Value ${value} is already exists in the tree`;
+                throw `Value ${value} is already existed in the tree`;
             }
 
             if (value > currentNode.getValue()) {
@@ -109,7 +118,7 @@ export class BinarySearchTree implements IStructure {
             let currentValue = currentNode.getValue();
             let parentValue = parentNode?.getValue();
 
-            // found the node for deletetion
+            // found the node for deletion
             if (value === currentValue) {
                 let isLeft = value < parentValue;
 

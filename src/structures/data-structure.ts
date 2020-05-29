@@ -35,6 +35,14 @@ export interface IDoublyLinkedNode extends ISinglyLinkedNode {
     setNext(node:IDoublyLinkedNode|null): void
 }
 
+export interface IQueue {
+    enqueue(value: any): number,
+    dequeue(): ISinglyLinkedNode | undefined,
+    getFirst(): ISinglyLinkedNode | null,
+    getLast(): ISinglyLinkedNode | null,
+    getSize(): number
+}
+
 export interface IBTreeNode extends INode {
     getLeft(): IBTreeNode | null,
     setLeft(node: IBTreeNode | null): void,

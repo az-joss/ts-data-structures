@@ -1,12 +1,4 @@
-import { IStructure, ISinglyLinkedNode } from './data-structure';
-
-export interface IQueue {
-    enqueue(value: any): number,
-    dequeue(): ISinglyLinkedNode | undefined,
-    getFirst(): ISinglyLinkedNode | null,
-    getLast(): ISinglyLinkedNode | null,
-    getSize(): number
-}
+import { ISinglyLinkedNode, IQueue } from './data-structure';
 
 export class QueueNode implements ISinglyLinkedNode {
     constructor(

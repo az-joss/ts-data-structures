@@ -22,7 +22,7 @@ describe('Binary search tree', () => {
             });
 
             expect(() => { instance.insert(input[2]); })
-                .toThrowError(`Value ${input[2]} is already exists in the tree`);
+                .toThrowError(`Value ${input[2]} is already existed in the tree`);
         });
 
         test('adds new node to the left branch if value less than root value', () => {
