@@ -1,12 +1,10 @@
-import {INode} from "./data-structure";
-
+import {IHeap} from "./contracts/structures";
+import {INode} from "./contracts/nodes";
 
 export class BinaryHeapNode implements INode {
     constructor(
         private value: any
-    ) {
-
-    }
+    ) {}
 
     getValue(): any {
         return this.value;
@@ -24,7 +22,7 @@ export class BinaryHeapNode implements INode {
  * | insert    | log N | 1     |
  * | extract   | lon N | 1     |
  */
-export class MaxBinaryHeap {
+export class MaxBinaryHeap implements IHeap {
 
     private pool: INode[] = [];
 
@@ -107,7 +105,7 @@ export class MaxBinaryHeap {
         });
     }
 
-    extractMax() {
+    extract(): any {
         if (!this.pool.length) {
             return null;
         }

@@ -25,16 +25,16 @@ describe('Max binary heap', () => {
         });
     });
 
-    describe('extractMax', () => {
+    describe('extract', () => {
         test('returns null if empty', () => {
             expect(instance.toArray().length).toEqual(0);
-            expect(instance.extractMax()).toBeNull();
+            expect(instance.extract()).toBeNull();
         });
 
         test('returns max value if heap with 1 node', () => {
             instance.insert(50);
 
-            expect(instance.extractMax()).toEqual(50);
+            expect(instance.extract()).toEqual(50);
             expect(instance.toArray().length).toEqual(0);
         });
 
@@ -50,7 +50,7 @@ describe('Max binary heap', () => {
             });
 
             data.forEach((num) => {
-                expect(instance.extractMax()).toEqual(num);
+                expect(instance.extract()).toEqual(num);
             });
         });
     });

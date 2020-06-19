@@ -1,12 +1,11 @@
-import { ISinglyLinkedNode, IQueue } from './data-structure';
+import {ISinglyLinkedNode} from './contracts/nodes';
+import {IQueue} from './contracts/structures';
 
 export class QueueNode implements ISinglyLinkedNode {
     constructor(
         private value: any,
         private next: ISinglyLinkedNode | null = null
-    ) {
-        //
-    }
+    ) {}
 
     getValue(): any {
         return this.value;
@@ -25,6 +24,9 @@ export class QueueNode implements ISinglyLinkedNode {
     }
 }
 
+/**
+ *
+ */
 export class Queue implements IQueue {
     private size: number = 0;
     private first: ISinglyLinkedNode | null = null;

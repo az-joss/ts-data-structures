@@ -1,4 +1,6 @@
-import {IBTreeNode, IStructure, TreeTraversStrategy} from "./data-structure";
+import {IStructure} from "./contracts/structures";
+import {IBTreeNode} from "./contracts/nodes";
+import {TreeTraversStrategy} from "./enums";
 
 export class BinarySearchTreeNode implements IBTreeNode {
     constructor(

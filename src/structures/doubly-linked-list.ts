@@ -1,13 +1,12 @@
-import { IDoublyLinkedNode, IListStructure } from "./data-structure";
+import {IList} from "./contracts/structures";
+import {IDoublyLinkedNode} from "./contracts/nodes";
 
 export class DoublyLinkedListNode implements IDoublyLinkedNode {
     constructor(
         private value:any,
         private prev:IDoublyLinkedNode|null = null,
         private next:IDoublyLinkedNode|null = null
-    ) {
-        //
-    }
+    ) {}
 
     getValue() {
         return this.value;
@@ -34,7 +33,10 @@ export class DoublyLinkedListNode implements IDoublyLinkedNode {
     }
 }
 
-export class DoublyLinkedList implements IListStructure {
+/**
+ *
+ */
+export class DoublyLinkedList implements IList {
     private length:number = 0;
     private head:IDoublyLinkedNode|null = null;
     private tail:IDoublyLinkedNode|null = null;

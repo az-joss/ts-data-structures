@@ -1,5 +1,5 @@
 import {BinarySearchTree, BinarySearchTreeNode} from "../../src/structures/binary-search-tree";
-import {TreeTraversStrategy} from "../../src/structures/data-structure";
+import {TreeTraversStrategy} from "../../src/structures/enums";
 
 describe('Binary search tree', () => {
     let instance: BinarySearchTree;
