@@ -268,9 +268,7 @@ describe('Binary search tree', () => {
             let result: number[] = [];
 
             // @ts-ignore
-            instance.travers((val) => {
-                result.push(val);
-            });
+            instance.travers();
 
             expect(result).toEqual([50, 39, 87, 25, 45, 61, 113, 33, 41, 75]);
         });
@@ -285,13 +283,7 @@ describe('Binary search tree', () => {
             let result: number[] = [];
 
             instance.travers(
-                // @ts-ignore
-                (val) => {
-                    result.push(val);
-                },
-                {
-                    strategy: TraversStrategy.DSF
-                }
+                TreeTraversStrategy.DFS_PRE_ORDER
             );
 
             expect(result).toEqual([50, 39, 25, 33, 45, 41, 87, 61, 75, 113]);
@@ -307,14 +299,7 @@ describe('Binary search tree', () => {
             let result: number[] = [];
 
             instance.travers(
-                // @ts-ignore
-                (val) => {
-                    result.push(val);
-                },
-                {
-                    strategy: TraversStrategy.DSF,
-                    order: TraversOrder.PostOrder
-                }
+                TreeTraversStrategy.DFS_POST_ORDER
             );
 
             expect(result).toEqual([33, 25, 41, 45, 39, 75, 61, 113, 87, 50]);
@@ -331,14 +316,7 @@ describe('Binary search tree', () => {
             let result: number[] = [];
 
             instance.travers(
-                // @ts-ignore
-                (val) => {
-                    result.push(val);
-                },
-                {
-                    strategy: TraversStrategy.DSF,
-                    order: TraversOrder.InOrder
-                }
+               TreeTraversStrategy.DFS_IN_ORDER
             );
 
             expect(result).toEqual(input.sort((a, b) => a < b ? -1 : 1));
