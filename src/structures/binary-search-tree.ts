@@ -1,23 +1,6 @@
-import {IBTreeNode, IStructure} from "./data-structure";
-
-//type TraversStrategy = 'bsf' | 'dsf';
-
-export enum TraversStrategy {
-    BSF,
-    DSF
-};
-
-export enum TraversOrder {
-    PreOrder,
-    PostOrder,
-    InOrder
-};
-
-type TraversOptions = {
-    strategy?: TraversStrategy,
-    order?: TraversOrder
-};
-
+import {IStructure} from "./contracts/structures";
+import {IBTreeNode} from "./contracts/nodes";
+import {TreeTraversStrategy} from "./enums";
 
 export class BinarySearchTreeNode implements IBTreeNode {
     constructor(
@@ -52,6 +35,15 @@ export class BinarySearchTreeNode implements IBTreeNode {
     }
 }
 
+/**
+ * Complexity (O)
+ * | operation | time   | space |
+ * --------------------------------
+ * | insert    | log N  | 1     |
+ * | find      | log N  | 1     |
+ * | remove    | log N  | log N |
+ * | travers   | log N  | 1     |
+ */
 export class BinarySearchTree implements IStructure {
     constructor(
         private root: IBTreeNode | null = null
@@ -75,7 +67,7 @@ export class BinarySearchTree implements IStructure {
 
         while (currentNode) {
             if (value === currentNode.getValue()) {
-                throw `Value ${value} is already exists in the tree`;
+                throw `Value ${value} is already existed in the tree`;
             }
 
             if (value > currentNode.getValue()) {
@@ -128,7 +120,7 @@ export class BinarySearchTree implements IStructure {
             let currentValue = currentNode.getValue();
             let parentValue = parentNode?.getValue();
 
-            // found the node for deletetion
+            // found the node for deletion
             if (value === currentValue) {
                 let isLeft = value < parentValue;
 
@@ -201,83 +193,105 @@ export class BinarySearchTree implements IStructure {
         return {minNode, minParentNode};
     }
 
-    travers(
-        cbl: ((value: number) => void) | null = null,
-        options: TraversOptions = {}
-    ) {
-        if (!this.root) {
-            return;
+    // @TODO: move ot mixin (trait) with hint working, but how?
+    travers(strategy: TreeTraversStrategy = TreeTraversStrategy.BFS) {
+        let root = this.getRoot();
+
+        if (!root) {
+            return [];
         }
 
-        let defaultOptions = {
-            strategy: TraversStrategy.BSF,
-            order: TraversOrder.PreOrder
-        };
-
-        options = {...defaultOptions, ...options}
-
-        switch (options.strategy) {
-            case TraversStrategy.BSF:
-                this.breadthFirstSearch(cbl);
-                break;
-            case TraversStrategy.DSF:
-                this.depthFirstSearch(cbl, options.order);
-                break;
+        switch (strategy) {
+            case TreeTraversStrategy.BFS:
+                return this.traversBFS(root);
+            case TreeTraversStrategy.DFS_PRE_ORDER:
+                return this.traversDFSPreOrder(root);
+            case TreeTraversStrategy.DFS_IN_ORDER:
+                return this.traversDFSInOrder(root);
+            case TreeTraversStrategy.DFS_POST_ORDER:
+                return this.traversDFSPostOrder(root);
         }
+
+        throw 'Unknown travers strategy';
     }
 
-    private breadthFirstSearch(
-        cbl: ((value: number) => void) | null = null
-    ) {
-        let queue: IBTreeNode[] = [];
-        // @ts-ignore
-        queue.push(this.root);
+    private traversBFS(rootNode: IBTreeNode): number[] {
+        let pool = [rootNode];
+        let result = [];
 
-        while (queue.length > 0) {
+        while (pool.length > 0) {
             // @ts-ignore
-            let currentNode: IBTreeNode = queue.shift();
+            let node: IBTreeNode = pool.shift();
+            // @ts-ignore
+            let leftNode: IBTreeNode = node.getLeft();
+            // @ts-ignore
+            let rightNode: IBTreeNode = node.getRight();
 
-            if (cbl) {
-                cbl(currentNode.getValue());
+            result.push(node.getValue());
+
+            if (leftNode) {
+                pool.push(leftNode);
             }
-            let child: IBTreeNode | null;
-            if (child = currentNode.getLeft()) {
-                queue.push(child);
-            }
-            if (child = currentNode.getRight()) {
-                queue.push(child);
+            if (rightNode) {
+                pool.push(rightNode);
             }
         }
+
+        return result;
     }
 
-    private depthFirstSearch(
-        cbl: ((value: number) => void) | null = null,
-        order: TraversOrder = TraversOrder.PreOrder
-    ): void {
-        let recursion = (node: IBTreeNode) => {
-            if (cbl && order === TraversOrder.PreOrder) {
-                cbl(node.getValue());
-            }
-
-            let child: IBTreeNode | null;
-            if (child = node.getLeft()) {
-                recursion(child);
-            }
-
-            if (cbl && order === TraversOrder.InOrder) {
-                cbl(node.getValue());
-            }
-
-            if (child = node.getRight()) {
-                recursion(child);
-            }
-
-            if (cbl && order === TraversOrder.PostOrder) {
-                cbl(node.getValue());
-            }
-        };
+    private traversDFSPreOrder(rootNode: IBTreeNode, result: number[] = []): number[] {
+        result.push(rootNode.getValue());
 
         // @ts-ignore
-        recursion(this.root);
+        let leftNode: IBTreeNode = rootNode.getLeft(),
+            // @ts-ignore
+            rightNode: IBTreeNode = rootNode.getRight();
+
+        if (leftNode) {
+            result = this.traversDFSPreOrder(leftNode, result);
+        }
+        if (rightNode) {
+            result = this.traversDFSPreOrder(rightNode, result);
+        }
+
+        return result;
+    }
+
+    private traversDFSPostOrder(rootNode: IBTreeNode, result: number[] = []): number[] {
+        // @ts-ignore
+        let leftNode: IBTreeNode = rootNode.getLeft(),
+            // @ts-ignore
+            rightNode: IBTreeNode = rootNode.getRight();
+
+        if (leftNode) {
+            result = this.traversDFSPostOrder(leftNode, result);
+        }
+        if (rightNode) {
+            result = this.traversDFSPostOrder(rightNode, result);
+        }
+
+        result.push(rootNode.getValue());
+
+        return result;
+    }
+
+    private traversDFSInOrder(rootNode: IBTreeNode, result: number[] = []): number[] {
+        // @ts-ignore
+        let leftNode: IBTreeNode = rootNode.getLeft(),
+            // @ts-ignore
+            rightNode: IBTreeNode = rootNode.getRight();
+
+        if (leftNode) {
+            result = this.traversDFSInOrder(leftNode, result);
+        }
+
+        result.push(rootNode.getValue());
+
+        if (rightNode) {
+            result = this.traversDFSInOrder(rightNode, result);
+        }
+
+        return result;
     }
 }

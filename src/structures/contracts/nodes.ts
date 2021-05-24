@@ -1,23 +1,3 @@
-export interface IStructure {
-
-}
-
-export interface IListStructure extends IStructure {
-    getLength(): number,
-    getHead(): object|null,
-    getTail(): object|null,
-    get(position:number): object|undefined,
-    set(position:number, value:any): boolean,
-    insert(position:number, value:any): boolean,
-    remove(position:number): object|undefined,
-    push(value:any): this,
-    pop(): object|undefined,
-    unshift(value:number): this,
-    shift(): object|undefined,
-    reverse(): void
-    toArray(): Array<any>
-}
-
 export interface INode {
     getValue(): any,
     setValue(value:any): void

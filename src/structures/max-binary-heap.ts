@@ -1,91 +1,135 @@
-import {IStructure} from "./data-structure";
+import {IHeap} from "./contracts/structures";
+import {INode} from "./contracts/nodes";
 
-export class MaxBinaryHeap implements IStructure {
+export class BinaryHeapNode implements INode {
     constructor(
-        private values: number[] = []
+        private value: any
+    ) {}
+
+    getValue(): any {
+        return this.value;
+    }
+
+    setValue(value: any): void {
+        this.value = value;
+    }
+}
+
+/**
+ * Complexity (O)
+ * | operation | time  | space |
+ * --------------------------------
+ * | insert    | log N | 1     |
+ * | extract   | lon N | 1     |
+ */
+export class MaxBinaryHeap implements IHeap {
+
+    private pool: INode[] = [];
+
+    constructor(
+
     ) {
         //
     }
 
-    getRoot(): number | undefined {
-        return this.values[0];
-    }
-
-    getLength(): number {
-        return this.values.length;
-    }
-
-    private bubbleUp(): void {
-        let getParentIndex = (index: number): number => {
-            return Math.floor((index - 1) / 2);
-        };
-        let index = this.values.length - 1;
-        let parentIndex: number = getParentIndex(index);
-
-        while (index && this.values[index] > this.values[parentIndex]) {
-            let tmp = this.values[parentIndex];
-
-            this.values[parentIndex] = this.values[index];
-            this.values[index] = tmp;
-
-            index = parentIndex;
-            parentIndex = getParentIndex(index);
+    private bubbleUp() {
+        if (this.pool.length < 2) {
+            return;
         }
-    }
 
-    private bubbleDown(): void {
-        const value = this.values[0];
-        let index = 0;
+        let currentNodeIndex = this.pool.length - 1;
 
-        while(true) {
-            let leftChildIndex = (2 * index) + 1,
-                rightChildIndex = (2 * index) + 2,
-                leftChildValue = this.values[leftChildIndex],
-                rightChildValue = this.values[rightChildIndex],
-                swapIndex = null,
-                swapValue = null;
+        while (currentNodeIndex) {
+            let parentNodeIndex = Math.floor((currentNodeIndex - 1) / 2),
+                currentNode = this.pool[currentNodeIndex],
+                parentNode = this.pool[parentNodeIndex],
+                currentNodeValue = currentNode.getValue(),
+                parentNodeValue = parentNode.getValue();
 
-            if (leftChildValue && leftChildValue > value) {
-                swapIndex = leftChildIndex;
-            }
-            if (rightChildValue
-                && rightChildValue > Math.max(value, leftChildValue)
-            ) {
-                swapIndex = rightChildIndex;
-            }
-
-            if (!swapIndex) {
+            if (parentNodeValue > currentNodeValue) {
                 break;
             }
 
-            this.values[index] = this.values[swapIndex];
-            this.values[swapIndex] = value;
+            currentNode.setValue(parentNodeValue);
+            parentNode.setValue(currentNodeValue);
 
-            index = swapIndex;
+            currentNodeIndex = parentNodeIndex;
         }
     }
 
-    insert(val: number): void {
-        this.values.push(val);
+    private sinkDown() {
+        if (this.pool.length < 2) {
+            return;
+        }
 
-        if (this.values.length > 1) {
-            this.bubbleUp();
+        let currentIndex = 0,
+            swap;
+        const currentValue = this.pool[currentIndex].getValue();
+
+        while (true) {
+            let leftChildIndex = 2 * currentIndex + 1,
+                rightChildIndex = 2 * currentIndex + 2,
+                leftChildValue = this.pool[leftChildIndex]?.getValue(),
+                rightChildValue = this.pool[rightChildIndex]?.getValue();
+
+            if (leftChildValue && leftChildValue > currentValue) {
+                swap = {index: leftChildIndex, value: leftChildValue};
+            }
+
+            if (rightChildValue && rightChildValue > leftChildValue) {
+                swap = {index: rightChildIndex, value: rightChildValue};
+            }
+
+            if (!swap) {
+                break;
+            }
+
+            this.pool[currentIndex].setValue(swap.value);
+            this.pool[swap.index].setValue(currentValue);
+
+            currentIndex = swap.index;
+
+            swap = null;
         }
     }
 
-    /**
-     * Removes root of the heap (maximum value)
-     */
-    remove(): number | undefined {
-        const max: number | undefined = this.values[0];
+    insert(value: any) {
+        this.pool.push(new BinaryHeapNode(value));
+
+        this.bubbleUp();
+    }
+
+    insertMany(list: any[]) {
+        list.forEach((num) => {
+            this.insert(num);
+        });
+    }
+
+    extract(): any {
+        if (!this.pool.length) {
+            return null;
+        }
+
+        const firstValue = this.pool[0].getValue();
+
+        if (this.pool.length == 1) {
+            this.pool = [];
+
+            return firstValue;
+        }
+
+        // set 1st value to last one
         // @ts-ignore
-        const replacement: number = this.values.pop();
+        this.pool[0].setValue(this.pool.pop().getValue());
 
-        if (this.values.length > 0) {
-            this.values[0] = replacement;
-            this.bubbleDown();
-        }
+        this.sinkDown();
 
-        return max;
+        return firstValue;
+    }
+
+    toArray(): Array<any> {
+        return this.pool.map((node: INode) => {
+            return node.getValue();
+        });
     }
 }

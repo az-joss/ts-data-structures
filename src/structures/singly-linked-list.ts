@@ -1,12 +1,11 @@
-import { IListStructure, ISinglyLinkedNode } from './data-structure';
+import {IList} from './contracts/structures';
+import {ISinglyLinkedNode} from './contracts/nodes';
 
 export class SinglyLinkedListNode implements ISinglyLinkedNode {
     constructor(
         private value:any,
         private next:ISinglyLinkedNode|null = null
-    ) {
-        //
-    }
+    ) {}
 
     getValue() {
         return this.value;
@@ -25,7 +24,10 @@ export class SinglyLinkedListNode implements ISinglyLinkedNode {
     }
 }
 
-export class SinglyLinkedList implements IListStructure
+/**
+ *
+ */
+export class SinglyLinkedList implements IList
 {
     private length:number = 0;
     private head:SinglyLinkedListNode|null = null;

@@ -1,20 +1,11 @@
-import { IStructure, ISinglyLinkedNode } from './data-structure';
-
-interface IStack extends IStructure {
-    push(value: any): number,
-    pop(): ISinglyLinkedNode | undefined
-    getFirst(): ISinglyLinkedNode | null,
-    getLast(): ISinglyLinkedNode | null,
-    getSize(): number
-}
+import {IStack} from './contracts/structures';
+import {ISinglyLinkedNode} from './contracts/nodes';
 
 export class StackNode implements ISinglyLinkedNode {
     constructor(
         private value: any,
         private next: ISinglyLinkedNode | null = null
-    ) {
-        //
-    }
+    ) {}
 
     getValue(): any {
         return this.value;
@@ -33,6 +24,9 @@ export class StackNode implements ISinglyLinkedNode {
     }
 }
 
+/**
+ *
+ */
 export class Stack implements IStack {
     private size: number = 0;
     private first: ISinglyLinkedNode | null = null;
